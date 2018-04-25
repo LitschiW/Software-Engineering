@@ -39,12 +39,6 @@ public class Project {
 
 	public void computeCriticalPath() {
 		resetLists();
-		// TODO: Implementieren Sie diese Methode, so dass nach deren Aufruf
-		// alle Werte im Graph gesetzt sind und die beiden verfuegbaren Sets
-		// korrekt befuellt wurden. Veraendern Sie nicht die Workpackage-Klasse!
-		// Zum Testen koennen Sie die beigefuegte Test-Klasse verwenden und
-		// erweitern. Beachten Sie, dass ihre Implementierung generell
-		// funktionieren und nicht nur dieses eine Problem loesen soll.
 
 		// process start nodes
 		for (Workpackage startnode : startNodes) {
@@ -54,24 +48,29 @@ public class Project {
 
 		LinkedList<Workpackage> toCheck = new LinkedList<>(startNodes);
 
-		int latestEarlyFinish = 0;
+		int latestEarlyFinish = 0; // stor the latest early finishing
 		while (!toCheck.isEmpty()) {
 			Workpackage current = toCheck.poll();
-			latestEarlyFinish = Math.max(current.getEarliestFinish(), latestEarlyFinish);
+			latestEarlyFinish = Math.max(current.getEarliestFinish(), latestEarlyFinish); // update latestEarly Finish
 
-			if (current.getSuccessors().isEmpty()) {
+			if (current.getSuccessors().isEmpty()) { // if a node has no successors it will be considered as an end node
 				endNodes.add(current);
 				continue;
 			}
 
 			for (Workpackage next : current.getSuccessors()) {
+				// Update Values of the Successors
 				next.setEarliestStart(Math.max(current.getEarliestFinish(), next.getEarliestStart()));
 				next.setEarliestFinish(next.getEarliestStart() + next.getDuration());
-				toCheck.push(next);
+				toCheck.push(next);// add successor to be checked next
 			}
 		}
 
+		// clear Queue and put all end nodes in it for the backtracing.
 		toCheck = new LinkedList<>(endNodes);
+
+		// Plug-in the latestEarlyFinish variable and update the latest start and slack
+		// of the end nodes
 		for (Workpackage endNode : endNodes) {
 			endNode.setLatestFinish(latestEarlyFinish);
 			endNode.setLatestStart(endNode.getLatestFinish() - endNode.getDuration());
@@ -81,15 +80,16 @@ public class Project {
 		while (!toCheck.isEmpty()) {
 			Workpackage current = toCheck.poll();
 
-			if (current.getSlack() == 0) {
+			if (current.getSlack() == 0) { //if a node has a slack of 0 it will be considered part of the critical path
 				criticalPathNodes.add(current);
 			}
 
+			//update the values of all predecessors
 			for (Workpackage prev : current.getPredecessors()) {
 				prev.setLatestFinish(Math.min(current.getLatestStart(), prev.getLatestFinish()));
 				prev.setLatestStart(prev.getLatestFinish() - prev.getDuration());
 				prev.setSlack(prev.getLatestStart() - prev.getEarliestStart());
-				toCheck.push(prev);
+				toCheck.push(prev); //add the next node to be checked
 			}
 		}
 	}
