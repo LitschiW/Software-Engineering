@@ -57,11 +57,11 @@ public class Project {
 		int latestEarlyFinish = 0;
 		while (!toCheck.isEmpty()) {
 			Workpackage current = toCheck.poll();
-
 			latestEarlyFinish = Math.max(current.getEarliestFinish(), latestEarlyFinish);
 
 			if (current.getSuccessors().isEmpty()) {
 				endNodes.add(current);
+				continue;
 			}
 
 			for (Workpackage next : current.getSuccessors()) {
@@ -72,22 +72,23 @@ public class Project {
 		}
 
 		toCheck = new LinkedList<>(endNodes);
-		for(Workpackage endNode: endNodes)
-		{
+		for (Workpackage endNode : endNodes) {
 			endNode.setLatestFinish(latestEarlyFinish);
-			endNode.setLatestStart(endNode.getLatestFinish()-endNode.getDuration());
-			endNode.setSlack(endNode.getLatestStart()-endNode.getEarliestStart());
+			endNode.setLatestStart(endNode.getLatestFinish() - endNode.getDuration());
+			endNode.setSlack(endNode.getLatestStart() - endNode.getEarliestStart());
 		}
-		
+
 		while (!toCheck.isEmpty()) {
 			Workpackage current = toCheck.poll();
-			
-			if(current.getSlack()==0) criticalPathNodes.add(current);
-			
-			for(Workpackage prev: current.getPredecessors()){
+
+			if (current.getSlack() == 0) {
+				criticalPathNodes.add(current);
+			}
+
+			for (Workpackage prev : current.getPredecessors()) {
 				prev.setLatestFinish(Math.min(current.getLatestStart(), prev.getLatestFinish()));
-				prev.setLatestStart(prev.getLatestFinish()-prev.getDuration());
-				prev.setSlack(prev.getLatestStart()-prev.getEarliestStart());
+				prev.setLatestStart(prev.getLatestFinish() - prev.getDuration());
+				prev.setSlack(prev.getLatestStart() - prev.getEarliestStart());
 				toCheck.push(prev);
 			}
 		}

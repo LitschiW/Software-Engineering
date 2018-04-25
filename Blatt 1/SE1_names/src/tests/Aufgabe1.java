@@ -1,5 +1,9 @@
 package tests;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -32,31 +36,27 @@ public class Aufgabe1 {
 		graph.getStartNodes().add(A01);
 		graph.getStartNodes().add(A02);
 		graph.getStartNodes().add(A03);
-
-		A01.addSuccessor(A04).addSuccessor(A05);
-		A02.addSuccessor(A06);
-		A03.addSuccessor(A07);
-		A04.addSuccessor(A08);
-		A06.addSuccessor(A09).addSuccessor(A10);
-		A07.addSuccessor(A11);
-		A05.addSuccessor(A12);
-		A08.addSuccessor(A12);		
-		A10.addSuccessor(A13);
-		A11.addSuccessor(A13);	
-		A09.addSuccessor(A14);
-		A12.addSuccessor(A14);
-		A09.addSuccessor(A15);
-		A12.addSuccessor(A15);
-		A13.addSuccessor(A16);
-		A15.addSuccessor(A16);
 		
+		A01.addSuccessor(A04).addSuccessor(A08).addSuccessor(A12).addSuccessor(A15).addSuccessor(A16);
+		A01.addSuccessor(A05).addSuccessor(A12).addSuccessor(A14);
+		A02.addSuccessor(A06).addSuccessor(A09).addSuccessor(A14);
+		A06.addSuccessor(A10).addSuccessor(A13).addSuccessor(A16);
+		A09.addSuccessor(A15);
+		A03.addSuccessor(A07).addSuccessor(A11).addSuccessor(A13);		
 
 		graph.computeCriticalPath();
-		for(Workpackage node : graph.getCriticalPathNodes())
+		
+		ArrayList<Workpackage> nodesSorted = new  ArrayList<>(graph.getCriticalPathNodes());
+		
+		Collections.sort(nodesSorted,(o1, o2) -> o1.getName().compareTo(o2.getName()));
+		
+		for(Workpackage node : nodesSorted)
 		{
-			System.out.println(node.getName());
+			System.out.println(node.getName() + " ES: "+ node.getEarliestStart() + 
+												" EF: " + node.getEarliestFinish() + 
+												" LS: " + node.getLatestStart() + 
+												" LF: " + node.getLatestFinish());
+			
 		}
-		@SuppressWarnings("unused")
-		int i =0;
 	}
 }
