@@ -12,6 +12,11 @@ import java.util.Stack;
  * Stellt ein Projekt dar, das aus Arbeitspaketen besteht. Im Prinzip nichts
  * anderes als ein Graph mit Arbeitspaketen als Knoten. Das Projekt kennt nur
  * die Startknoten, diese kennen jeweils ihren Nachfolger.
+ * 
+ * @author Lan Schlufter Cayapa, 3222681, st149553@stud.uni-stuttgart.de
+ * @author Lion Wagner, 3231355, st148345@stud.uni-stuttgart.de
+ * @author Jannis Westermann, 3288735, st153444@stud.uni-stuttgart.de
+ * @author Lukas Pietzsch, 3227178, st151191@stud.uni-stuttgart.de
  */
 public class Project {
 
